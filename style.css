@@ -47,6 +47,7 @@ body {
 .type-table-blank img {
   pointer-events: none;
   height: 35px;
+  filter: invert(100%) brightness(50%);
 }
 
 [data-mark="1"] {
