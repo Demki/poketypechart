@@ -1,6 +1,8 @@
 const Types = [
-  "Bug", "Dark", "Dragon", "Electric", "Fairy", "Fighting", "Fire", "Flying", "Ghost", "Normal", "Poison", "Psychic", "Rock", "Steel", "Water"
+  "Bug", "Dark", "Dragon", "Electric", "Fairy", "Fighting", "Fire", "Flying", "Ghost", "Grass", "Ground", "Ice", "Normal", "Poison", "Psychic", "Rock", "Steel", "Water"
 ]
+
+const fairyIndex = Types.indexOf("Fairy");
 
 const COLORS_MAX = 3;
 const COLORS_MIN = -2;
@@ -11,12 +13,24 @@ window.addEventListener("load", () => {
 
   mainDiv.addEventListener("click", (ev) => { mark(1)(ev); ev.preventDefault(); });
   mainDiv.addEventListener("contextmenu", (ev) => { mark(-1)(ev); ev.preventDefault(); });
-
-  [...mainDiv.children].forEach((el, idx) => {
-    el.addEventListener("mouseenter", highlight(mainDiv, idx));
-  })
   mainDiv.addEventListener("mouseleave", unHighlight(mainDiv));
+
+  document.getElementById("fairyButton").addEventListener("click", toggleFairy);
 });
+
+function toggleFairy()
+{
+  if(Types.includes("Fairy")) 
+  {
+    Types.splice(fairyIndex, 1);
+    document.getElementById("fairyButton").value = "add fairy";
+  }
+  else {
+    Types.splice(fairyIndex, 0, "Fairy");
+    document.getElementById("fairyButton").value = "remove fairy";
+  }
+  fillBoard(document.getElementById("main"));
+}
 
 function highlight(div, idx) {
   return () =>
@@ -73,6 +87,9 @@ function fillBoard(div) {
     htmlToElement(`<div class="type-table-header"><img src="types/Icon_${type}.webp"/></div>`),
     ...Types.map(_ => htmlToElement(`<div class="type-table-blank"></div>`))]
   ));
+  [...div.children].forEach((el, idx) => {
+    el.addEventListener("mouseenter", highlight(div, idx));
+  })
 
   document.body.style.setProperty("--columns", Types.length + 1);
 }

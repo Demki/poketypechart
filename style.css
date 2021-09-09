@@ -3,14 +3,19 @@ body {
   padding: 0;
   margin: 0;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 
   --color-2: yellowgreen;
-  --color-1: #7070FF;
+  --color-1: red;
   --color1: lightgrey;
-  --color2: red;
+  --color2: #7070FF;
   --color3: #420690;
+}
+
+#controls {
+  margin: 10px;
 }
 
 #main {
