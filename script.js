@@ -86,9 +86,9 @@ function clearBoard(div) {
 function fillBoard(div) {
   clearBoard(div);
   div.append(htmlToElement(`<div class="top-of-type-table-blank"></div>`));
-  div.append(...Types.map(type => htmlToElement(`<div class="type-table-header"><img src="types/Icon_${type}.webp"/></div>`)));
+  div.append(...Types.map(type => htmlToElement(`<div class="type-table-header"><img title="${type}" src="types/Icon_${type}.webp" /></div>`)));
   div.append(...Types.flatMap(type => [
-    htmlToElement(`<div class="type-table-header"><img src="types/Icon_${type}.webp"/></div>`),
+    htmlToElement(`<div class="type-table-header"><img title="${type}" src="types/Icon_${type}.webp"/></div>`),
     ...Types.map(_ => htmlToElement(`<div class="type-table-blank"></div>`))]
   ));
   [...div.children].forEach((el, idx) => {
