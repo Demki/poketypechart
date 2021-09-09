@@ -39,27 +39,33 @@ body {
 
 .type-table-blank {
   background-color: black;
-  padding: 3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.type-table-blank[data-mark="1"] {
+.type-table-blank img {
+  pointer-events: none;
+  height: 35px;
+}
+
+[data-mark="1"] {
   background-color: var(--color1);
 }
 
-.type-table-blank[data-mark="2"] {
+[data-mark="2"] {
   background-color: var(--color2);
-  clip-path: polygon(evenodd, 20% 0%, 0% 20%, 30% 50%, 0% 80%, 20% 100%, 50% 70%, 80% 100%, 100% 80%, 70% 50%, 100% 20%, 80% 0%, 50% 30%, 20% 0%, 0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%);
 }
 
-.type-table-blank[data-mark="3"] {
+[data-mark="3"] {
   background-color: var(--color3);
 }
 
-.type-table-blank[data-mark="-1"] {
+[data-mark="-1"] {
   background-color: var(--color-1);
 }
 
-.type-table-blank[data-mark="-2"] {
+[data-mark="-2"] {
   background-color: var(--color-2);
 }
 
