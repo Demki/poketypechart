@@ -64,11 +64,8 @@ function mark(d) {
     if (target.classList.contains("type-table-blank")) {
       const marking = Math.min(COLORS_MAX, Math.max(COLORS_MIN, (Number.parseInt(target.dataset.mark) | 0) + d));
       target.dataset.mark = marking;
-      if(marking != 3) 
-      {
-        while (target.children.length > 0) target.removeChild(target.firstChild);
-      }
-      else {
+      while (target.children.length > 0) target.removeChild(target.firstChild);
+      if(marking === 3) {
         target.append(htmlToElement(`<img src="exedout.png" />`))
       }
     }
