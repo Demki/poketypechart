@@ -7,10 +7,10 @@ body {
   justify-content: center;
   align-items: center;
 
-  --color-2: yellowgreen;
+  --color-2: #7070FF;
   --color-1: red;
   --color1: lightgrey;
-  --color2: #7070FF;
+  --color2: yellowgreen;
   --color3: #420690;
 }
 
@@ -48,6 +48,7 @@ body {
 
 .type-table-blank[data-mark="2"] {
   background-color: var(--color2);
+  clip-path: polygon(evenodd, 20% 0%, 0% 20%, 30% 50%, 0% 80%, 20% 100%, 50% 70%, 80% 100%, 100% 80%, 70% 50%, 100% 20%, 80% 0%, 50% 30%, 20% 0%, 0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%);
 }
 
 .type-table-blank[data-mark="3"] {
