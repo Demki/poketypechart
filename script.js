@@ -2,8 +2,6 @@ const Types = [
   "Bug", "Dark", "Dragon", "Electric", "Fairy", "Fighting", "Fire", "Flying", "Ghost", "Grass", "Ground", "Ice", "Normal", "Poison", "Psychic", "Rock", "Steel", "Water"
 ]
 
-const fairyIndex = Types.indexOf("Fairy");
-
 const COLORS_MAX = 3;
 const COLORS_MIN = -2;
 
