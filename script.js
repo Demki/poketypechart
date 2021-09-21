@@ -27,11 +27,11 @@ function toggleFairy()
   if(Types.includes("Fairy")) 
   {
     Types.splice(fairyIndex, 1);
-    document.getElementById("fairyButton").value = "add fairy";
+    document.getElementById("fairyButton").value = "Add Fairy";
   }
   else {
     Types.splice(fairyIndex, 0, "Fairy");
-    document.getElementById("fairyButton").value = "remove fairy";
+    document.getElementById("fairyButton").value = "Remove Fairy";
   }
   fillBoard(document.getElementById("main"));
 }
@@ -151,6 +151,12 @@ function parseCSV(ev)
   var csv = ev.target.result;
   var csvArray = CSVToArray(csv);
   var main = document.getElementById("main");
+  var headerRow = csvArray[0];
+  if (headerRow.length != Types.length + 1)
+  {
+    alert("Input CSV doesn't have the same number of types as tracker. Try adding or removing Fairy type.");
+    return;
+  }
   for (var i = 1; i < csvArray.length; i++)
   {
     var row = csvArray[i];
@@ -174,6 +180,9 @@ function parseCSV(ev)
         case "2":
           marking = 2;
           break;
+        case "_":
+          marking = 0;
+		  break;
       }
       cell.dataset.mark = marking;
       if(marking === 3) {
