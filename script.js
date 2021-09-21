@@ -17,6 +17,9 @@ window.addEventListener("load", () => {
 
   document.getElementById("fairyButton").addEventListener("click", toggleFairy);
   document.getElementById("uploadLogButton").addEventListener("click", uploadLog);
+  document.getElementById("outputTxt").value = "";
+  document.getElementById("displayCSVButton").addEventListener("click", showConfirmationCSV);
+  document.getElementById("hideCSVButton").addEventListener("click", hideConfirmationCSV);
 });
 
 function toggleFairy()
@@ -24,11 +27,11 @@ function toggleFairy()
   if(Types.includes("Fairy")) 
   {
     Types.splice(fairyIndex, 1);
-    document.getElementById("fairyButton").value = "Add Fairy";
+    document.getElementById("fairyButton").value = "add fairy";
   }
   else {
     Types.splice(fairyIndex, 0, "Fairy");
-    document.getElementById("fairyButton").value = "Remove Fairy";
+    document.getElementById("fairyButton").value = "remove fairy";
   }
   fillBoard(document.getElementById("main"));
 }
@@ -244,4 +247,38 @@ function fillBoard(div) {
   })
 
   document.body.style.setProperty("--columns", Types.length + 1);
+}
+
+function mapMarking(mark) {
+  switch(mark) {
+    case 1 : return "1";
+    case 2 : return "2";
+    case 3 : return "0";
+    case -1: return "0.5";
+    default: return "_";
+  }
+
+}
+
+function getTypeChartConfirmationCSV() {
+  let csv = "_," + Types.map(x => x.toUpperCase().substring(0,3)).join(",") + "\n";
+  Types.forEach( (x, idx) =>
+    { csv += x+",";
+      csv += [...document.getElementById("main").children].slice((idx+1)*(Types.length+1)+1, (idx+2)*(Types.length+1)).map(x => mapMarking(x.dataset.mark | 0)).join(",") + "\n" }
+  )
+  return csv;
+}
+
+function showConfirmationCSV() {
+  const outputTextField = document.getElementById("outputTxt");
+  outputTextField.classList.remove("hidden");
+  outputTextField.value = getTypeChartConfirmationCSV();
+  document.getElementById("hideCSVButton").classList.remove("hidden");
+}
+
+function hideConfirmationCSV() {
+  const outputTextField = document.getElementById("outputTxt");
+  outputTextField.classList.add("hidden");
+  outputTextField.value = "";
+  document.getElementById("hideCSVButton").classList.add("hidden");
 }
