@@ -23,8 +23,8 @@ window.addEventListener("load", () => {
     }
   });
 
-  document.getElementById("steelButton").addEventListener("click", toggleSteel);
-  document.getElementById("fairyButton").addEventListener("click", toggleFairy);
+  document.getElementById("steelButton").addEventListener("click", toggleType);
+  document.getElementById("fairyButton").addEventListener("click", toggleType);
   
   document.getElementById("uploadLogButton").addEventListener("click", uploadLog);
   document.getElementById("verifyLogButton").addEventListener("click", verifyLog);
@@ -35,8 +35,9 @@ window.addEventListener("load", () => {
   document.getElementById("saveCSVButton").addEventListener("click", saveConfirmationCSV);
 });
 
-function toggleType(type)
+function toggleType(ev)
 {
+  const type = ev.target.dataset.type;
   const typeIndex = Types.indexOf(type);
   if (typeIndex > -1)
   {
@@ -48,17 +49,7 @@ function toggleType(type)
     Types.sort();
   }
   fillBoard(document.getElementById("main"));
-  return typeIndex > -1;
-}
-
-function toggleSteel()
-{
-  document.getElementById("steelButton").value = `${toggleType("Steel") ? "Add" : "Remove"} Steel`;
-}
-
-function toggleFairy()
-{
-  document.getElementById("fairyButton").value = `${toggleType("Fairy") ? "Add" : "Remove"} Fairy`;
+  ev.target.value = `${typeIndex > -1 ? "Add" : "Remove"} ${type}`;
 }
 
 function checkFile()
