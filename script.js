@@ -246,15 +246,15 @@ function verifyCSV(ev)
           break;
         case "_":
           marking = 0;
-		  break;
+          break;
       }
-	  if (marking != cell.dataset.mark)
+      if (marking != cell.dataset.mark)
       {
-		console.log("No match at " + i + "," + j);
-		console.log("File: " + marking);
-		console.log("Board: " + cell.dataset.mark);
-	    alert("NO MATCH. Try again.");
-		return;
+        console.log("No match at " + i + "," + j);
+        console.log("File: " + marking);
+        console.log("Board: " + cell.dataset.mark);
+        alert("NO MATCH. Try again.");
+        return;
       }
     }
   }
