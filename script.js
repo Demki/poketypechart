@@ -211,21 +211,26 @@ function uploadCSV(ev)
 
 function verifyCSV(ev)
 {
-  var csv = ev.target.result;
-  var csvArray = CSVToArray(csv);
-  var main = document.getElementById("main");
-  var headerRow = csvArray[0];
+  const csv = ev.target.result;
+  const csvArray = CSVToArray(csv);
+  const main = document.getElementById("main");
+  const headerRow = csvArray[0];
   if (headerRow.length != Types.length + 1)
   {
     alert("Input CSV doesn't have the same number of types as tracker. Try adding or removing Fairy type.");
     return;
   }
-  for (var i = 1; i < csvArray.length; i++)
+  if ([...main.children].some((element) => element.dataset.mark && element.dataset.mark == 0))
   {
-    var row = csvArray[i];
+    alert("Tracking incomplete. Unable to verify.");
+    return;
+  }
+  for (let i = 1; i < csvArray.length; i++)
+  {
+    const row = csvArray[i];
     for (var j = 1; j < row.length; j++)
     {
-      var cell = main.children[i * (Types.length + 1) + j];
+      const cell = main.children[i * (Types.length + 1) + j];
       let marking = mapCSVMark(csvArray[i][j]);
       if (marking === null)
       {
@@ -327,7 +332,7 @@ function fillBoard(div) {
   div.append(...Types.map(type => htmlToElement(`<div class="type-table-header"><img title="${type}" src="types/Icon_${type}.webp" /></div>`)));
   div.append(...Types.flatMap(type => [
     htmlToElement(`<div class="type-table-header"><img title="${type}" src="types/Icon_${type}.webp"/></div>`),
-    ...Types.map(_ => htmlToElement(`<div class="type-table-blank"></div>`))]
+    ...Types.map(_ => htmlToElement(`<div class="type-table-blank" data-mark="0"></div>`))]
   ));
   [...div.children].forEach((el, idx) => {
     el.addEventListener("mouseenter", highlight(div, idx));
