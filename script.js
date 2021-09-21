@@ -276,8 +276,20 @@ function unHighlight(div) {
 function setMarking(target, marking) {
   target.dataset.mark = marking;
   while (target.children.length > 0) target.removeChild(target.firstChild);
-  if(marking === 3) {
-    target.append(htmlToElement(`<img src="exedout.png" />`))
+  switch (marking)
+  {
+    case -1:
+      target.append(htmlToElement(`<img src="NotVeryEffective.png" />`));
+      break;
+    case 3:
+      target.append(htmlToElement(`<img src="NoEffect.png" />`));
+      break;
+    case 1:
+      target.append(htmlToElement(`<img src="Normal.png" />`));
+      break;
+    case 2:
+      target.append(htmlToElement(`<img src="SuperEffective.png" />`));
+      break;
   }
   updateCount();
   document.getElementById("outputTxt").value = getTypeChartConfirmationCSV();
