@@ -168,6 +168,18 @@ function CSVToArray( strData, strDelimiter ){
     return arrData;
 }
 
+function mapCSVMark(csvMark)
+{
+  switch(csvMark) {
+    case "0.5" : return -1;
+    case "0" : return 3;
+    case "1" : return 1;
+    case "2": return 2;
+    case "_": return 0;
+    default: return null;
+  }
+}
+
 function uploadCSV(ev)
 {
   const csv = ev.target.result;
@@ -185,27 +197,11 @@ function uploadCSV(ev)
     for (let j = 1; j < row.length; j++)
     {
       const cell = main.children[i * (Types.length + 1) + j];
-      let marking;
-      switch (csvArray[i][j])
+      let marking = mapCSVMark(csvArray[i][j]);
+      if (marking === null)
       {
-        case "0.5":
-          marking = -1;
-          break;
-        case "0":
-          marking = 3;
-          break;
-        case "1":
-          marking = 1;
-          break;
-        case "2":
-          marking = 2;
-          break;
-        case "_":
-          marking = 0;
-          break;
-        default:
-          marking = 0;
-          console.error(`Read unexpected value of ${csvArray[i][j]} from the csv.`);
+        marking = 0;
+        console.error(`Read unexpected value of ${csvArray[i][j]} from the csv.`);
       }
       setMarking(cell, marking);
     }
@@ -229,24 +225,12 @@ function verifyCSV(ev)
     for (var j = 1; j < row.length; j++)
     {
       var cell = main.children[i * (Types.length + 1) + j];
-      var marking;
-      switch (csvArray[i][j])
+      let marking = mapCSVMark(csvArray[i][j]);
+      if (marking === null)
       {
-        case "0.5":
-          marking = -1;
-          break;
-        case "0":
-          marking = 3;
-          break;
-        case "1":
-          marking = 1;
-          break;
-        case "2":
-          marking = 2;
-          break;
-        case "_":
-          marking = 0;
-          break;
+        alert("Unexpected value in CSV - Verification failed.");
+        console.error(`Read unexpected value of ${csvArray[i][j]} from the csv.`);
+        return;
       }
       if (marking != cell.dataset.mark)
       {
@@ -349,7 +333,6 @@ function mapMarking(mark) {
     case "-1": return "0.5";
     default: return "_";
   }
-
 }
 
 function getTypeChartConfirmationCSV() {
