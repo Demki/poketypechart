@@ -41,7 +41,7 @@ function toggleFairy()
 
 function checkFile()
 {
-  var randoLogFile = document.getElementById("randoLogFile");
+  const randoLogFile = document.getElementById("randoLogFile");
   if (randoLogFile.files.length === 0)
   {
     alert("No file selected.");
@@ -49,7 +49,7 @@ function checkFile()
   }
   else
   {
-    var file = randoLogFile.files[0];
+    const file = randoLogFile.files[0];
     if (file.type && !(file.type === "application/vnd.ms-excel" || file.type === "text/plain" || file.type === "text/csv"))
     {
       alert("File must be a CSV.");
@@ -91,7 +91,7 @@ function CSVToArray( strData, strDelimiter ){
     strDelimiter = (strDelimiter || ",");
 
     // Create a regular expression to parse the CSV values.
-    var objPattern = new RegExp(
+    const objPattern = new RegExp(
         (
             // Delimiters.
             "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
@@ -108,11 +108,11 @@ function CSVToArray( strData, strDelimiter ){
 
     // Create an array to hold our data. Give the array
     // a default empty first row.
-    var arrData = [[]];
+    const arrData = [[]];
 
     // Create an array to hold our individual pattern
     // matching groups.
-    var arrMatches = null;
+    let arrMatches = null;
 
 
     // Keep looping over the regular expression matches
@@ -120,7 +120,7 @@ function CSVToArray( strData, strDelimiter ){
     while (arrMatches = objPattern.exec( strData )){
 
         // Get the delimiter that was found.
-        var strMatchedDelimiter = arrMatches[ 1 ];
+        const strMatchedDelimiter = arrMatches[ 1 ];
 
         // Check to see if the given delimiter has a length
         // (is not the start of string) and if it matches
@@ -137,7 +137,7 @@ function CSVToArray( strData, strDelimiter ){
 
         }
 
-        var strMatchedValue;
+        let strMatchedValue;
 
         // Now that we have our delimiter out of the way,
         // let's check to see which kind of value we
@@ -165,28 +165,27 @@ function CSVToArray( strData, strDelimiter ){
     }
 
     // Return the parsed data.
-    return( arrData );
+    return arrData;
 }
 
 function uploadCSV(ev)
 {
-  var csv = ev.target.result;
-  var csvArray = CSVToArray(csv);
-  var main = document.getElementById("main");
-  var headerRow = csvArray[0];
+  const csv = ev.target.result;
+  const csvArray = CSVToArray(csv);
+  const main = document.getElementById("main");
+  const headerRow = csvArray[0];
   if (headerRow.length != Types.length + 1)
   {
     alert("Input CSV doesn't have the same number of types as tracker. Try adding or removing Fairy type.");
     return;
   }
-  for (var i = 1; i < csvArray.length; i++)
+  for (let i = 1; i < csvArray.length; i++)
   {
-    var row = csvArray[i];
-    for (var j = 1; j < row.length; j++)
+    const row = csvArray[i];
+    for (let j = 1; j < row.length; j++)
     {
-      var cell = main.children[i * (Types.length + 1) + j];
-      while (cell.children.length > 0) cell.removeChild(cell.firstChild);
-      var marking;
+      const cell = main.children[i * (Types.length + 1) + j];
+      let marking;
       switch (csvArray[i][j])
       {
         case "0.5":
@@ -203,12 +202,12 @@ function uploadCSV(ev)
           break;
         case "_":
           marking = 0;
-		  break;
+          break;
+        default:
+          marking = 0;
+          console.error(`Read unexpected value of ${csvArray[i][j]} from the csv.`);
       }
-      cell.dataset.mark = marking;
-      if(marking === 3) {
-        cell.append(htmlToElement(`<img src="exedout.png" />`))
-      }
+      setMarking(cell, marking);
     }
   }
 }
@@ -289,15 +288,26 @@ function unHighlight(div) {
   }
 }
 
+function setMarking(target, marking) {
+  target.dataset.mark = marking;
+  while (target.children.length > 0) target.removeChild(target.firstChild);
+  if(marking === 3) {
+    target.append(htmlToElement(`<img src="exedout.png" />`))
+  }
+  updateCount();
+}
+
+function updateCount() {
+  const output = document.getElementById("main").children[0];
+  const marked = [...document.getElementsByClassName("type-table-blank")].filter(x => [-1,1,2,3].includes(Number.parseInt(x.dataset.mark) || 0)).length;
+  output.innerHTML = `<span>${marked}</span>`;
+}
+
 function mark(d) {
   return ({ target }) => {
     if (target.classList.contains("type-table-blank")) {
-      const marking = Math.min(COLORS_MAX, Math.max(COLORS_MIN, (Number.parseInt(target.dataset.mark) | 0) + d));
-      target.dataset.mark = marking;
-      while (target.children.length > 0) target.removeChild(target.firstChild);
-      if(marking === 3) {
-        target.append(htmlToElement(`<img src="exedout.png" />`))
-      }
+      const marking = Math.min(COLORS_MAX, Math.max(COLORS_MIN, (Number.parseInt(target.dataset.mark) || 0) + d));
+      setMarking(target, marking);
     }
   }
 }
@@ -315,7 +325,7 @@ function clearBoard(div) {
 
 function fillBoard(div) {
   clearBoard(div);
-  div.append(htmlToElement(`<div class="top-of-type-table-blank"></div>`));
+  div.append(htmlToElement(`<div class="top-of-type-table-blank"><span>0</span></div>`));
   div.append(...Types.map(type => htmlToElement(`<div class="type-table-header"><img title="${type}" src="types/Icon_${type}.webp" /></div>`)));
   div.append(...Types.flatMap(type => [
     htmlToElement(`<div class="type-table-header"><img title="${type}" src="types/Icon_${type}.webp"/></div>`),
@@ -343,7 +353,7 @@ function getTypeChartConfirmationCSV() {
   let csv = "_," + Types.map(x => x.toUpperCase().substring(0,3)).join(",") + "\n";
   Types.forEach( (x, idx) =>
     { csv += x+",";
-      csv += [...document.getElementById("main").children].slice((idx+1)*(Types.length+1)+1, (idx+2)*(Types.length+1)).map(x => mapMarking(x.dataset.mark | 0)).join(",") + "\n" }
+      csv += [...document.getElementById("main").children].slice((idx+1)*(Types.length+1)+1, (idx+2)*(Types.length+1)).map(x => mapMarking(x.dataset.mark || 0)).join(",") + "\n" }
   )
   return csv;
 }

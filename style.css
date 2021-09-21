@@ -60,6 +60,13 @@ body {
   filter: invert(100%) brightness(50%);
 }
 
+.top-of-type-table-blank {
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
 [data-mark="1"] {
   background-color: var(--color1);
 }
