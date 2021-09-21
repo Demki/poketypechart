@@ -87,7 +87,10 @@ body {
   background-color: var(--color-2);
 }
 
+.type-table-header.highlighted {
+  filter: brightness(60%);
+}
+
 .highlighted {
-  filter: brightness(80%);
   outline: 2px solid rgb(225, 225, 225);
 }
