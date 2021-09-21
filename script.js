@@ -23,6 +23,7 @@ window.addEventListener("load", () => {
   document.getElementById("outputTxt").value = "";
   document.getElementById("showCSVButton").addEventListener("click", showConfirmationCSV);
   document.getElementById("hideCSVButton").addEventListener("click", hideConfirmationCSV);
+  document.getElementById("saveCSVButton").addEventListener("click", saveConfirmationCSV);
 });
 
 function toggleFairy()
@@ -357,4 +358,15 @@ function hideConfirmationCSV() {
   outputTextField.classList.add("hidden");
   document.getElementById("hideCSVButton").classList.add("hidden");
   document.getElementById("showCSVButton").classList.remove("hidden");
+}
+
+function saveConfirmationCSV() {
+  const a = document.createElement("a");
+  const file = new Blob([getTypeChartConfirmationCSV()], {type: "text/csv"});
+  
+  a.href = URL.createObjectURL(file);
+  a.download = "PokeTypeChart.csv";
+  a.click();
+  
+  URL.revokeObjectURL(a.href);
 }
