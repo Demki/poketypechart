@@ -226,6 +226,11 @@ function verifyCSV(ev)
     for (var j = 1; j < row.length; j++)
     {
       var cell = main.children[i * (Types.length + 1) + j];
+      if (cell.dataset.mark == 0)
+      {
+        alert("Tracking incomplete. Unable to verify.");
+        return;
+      }
       let marking = mapCSVMark(csvArray[i][j]);
       if (marking === null)
       {
