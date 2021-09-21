@@ -25,6 +25,7 @@ window.addEventListener("load", () => {
     }
   });
 
+  document.getElementById("steelButton").addEventListener("click", toggleSteel);
   document.getElementById("fairyButton").addEventListener("click", toggleFairy);
   
   document.getElementById("uploadLogButton").addEventListener("click", uploadLog);
@@ -36,18 +37,30 @@ window.addEventListener("load", () => {
   document.getElementById("saveCSVButton").addEventListener("click", saveConfirmationCSV);
 });
 
-function toggleFairy()
+function toggleType(type)
 {
-  if(Types.includes("Fairy")) 
+  const typeIndex = Types.indexOf(type);
+  if (typeIndex > -1)
   {
-    Types.splice(fairyIndex, 1);
-    document.getElementById("fairyButton").value = "Add Fairy";
+    Types.splice(typeIndex, 1);
   }
-  else {
-    Types.splice(fairyIndex, 0, "Fairy");
-    document.getElementById("fairyButton").value = "Remove Fairy";
+  else
+  {
+    Types.push(type);
+    Types.sort();
   }
   fillBoard(document.getElementById("main"));
+  return typeIndex > -1;
+}
+
+function toggleSteel()
+{
+  document.getElementById("steelButton").value = `${toggleType("Steel") ? "Add" : "Remove"} Steel`;
+}
+
+function toggleFairy()
+{
+  document.getElementById("fairyButton").value = `${toggleType("Fairy") ? "Add" : "Remove"} Fairy`;
 }
 
 function checkFile()
