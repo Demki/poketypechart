@@ -182,12 +182,21 @@ function CSVToArray( strData, strDelimiter ){
 function mapCSVMark(csvMark)
 {
   switch(csvMark) {
-    case "0.5" : return -1;
-    case "0" : return 3;
-    case "1" : return 1;
-    case "2": return 2;
-    case "_": return 0;
-    default: return null;
+    case "0.5":
+      return -1;
+    case "0":
+    case "0.0":
+      return 3;
+    case "1":
+    case "1.0":
+      return 1;
+    case "2":
+    case "2.0":
+      return 2;
+    case "_":
+      return 0;
+    default:
+      return null;
   }
 }
 
@@ -355,9 +364,9 @@ function fillBoard(div) {
 
 function mapMarking(mark) {
   switch(mark) {
-    case "1" : return "1";
-    case "2" : return "2";
-    case "3" : return "0";
+    case "1" : return "1.0";
+    case "2" : return "2.0";
+    case "3" : return "0.0";
     case "-1": return "0.5";
     default: return "_";
   }
