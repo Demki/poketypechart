@@ -16,6 +16,7 @@ window.addEventListener("load", () => {
   mainDiv.addEventListener("mouseleave", unHighlight(mainDiv));
 
   document.getElementById("fairyButton").addEventListener("click", toggleFairy);
+  document.getElementById("uploadLogButton").addEventListener("click", uploadLog);
 });
 
 function toggleFairy()
@@ -23,13 +24,160 @@ function toggleFairy()
   if(Types.includes("Fairy")) 
   {
     Types.splice(fairyIndex, 1);
-    document.getElementById("fairyButton").value = "add fairy";
+    document.getElementById("fairyButton").value = "Add Fairy";
   }
   else {
     Types.splice(fairyIndex, 0, "Fairy");
-    document.getElementById("fairyButton").value = "remove fairy";
+    document.getElementById("fairyButton").value = "Remove Fairy";
   }
   fillBoard(document.getElementById("main"));
+}
+
+function uploadLog()
+{
+  var randoLogFile = document.getElementById("randoLogFile");
+  if (randoLogFile.files.length === 0)
+  {
+    alert("No file selected.");
+  }
+  else
+  {
+    var file = randoLogFile.files[0];
+    if (file.type && !(file.type === "application/vnd.ms-excel" || file.type === "text/plain" || file.type === "text/csv"))
+    {
+      alert("File must be a CSV.");
+    }
+    else
+    {
+      var reader = new FileReader();
+      reader.addEventListener("load", parseCSV);
+      reader.readAsText(file);
+    }
+  }
+}
+
+// ref: http://stackoverflow.com/a/1293163/2343
+// This will parse a delimited string into an array of
+// arrays. The default delimiter is the comma, but this
+// can be overriden in the second argument.
+function CSVToArray( strData, strDelimiter ){
+    // Check to see if the delimiter is defined. If not,
+    // then default to comma.
+    strDelimiter = (strDelimiter || ",");
+
+    // Create a regular expression to parse the CSV values.
+    var objPattern = new RegExp(
+        (
+            // Delimiters.
+            "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
+
+            // Quoted fields.
+            "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
+
+            // Standard fields.
+            "([^\"\\" + strDelimiter + "\\r\\n]*))"
+        ),
+        "gi"
+        );
+
+
+    // Create an array to hold our data. Give the array
+    // a default empty first row.
+    var arrData = [[]];
+
+    // Create an array to hold our individual pattern
+    // matching groups.
+    var arrMatches = null;
+
+
+    // Keep looping over the regular expression matches
+    // until we can no longer find a match.
+    while (arrMatches = objPattern.exec( strData )){
+
+        // Get the delimiter that was found.
+        var strMatchedDelimiter = arrMatches[ 1 ];
+
+        // Check to see if the given delimiter has a length
+        // (is not the start of string) and if it matches
+        // field delimiter. If id does not, then we know
+        // that this delimiter is a row delimiter.
+        if (
+            strMatchedDelimiter.length &&
+            strMatchedDelimiter !== strDelimiter
+            ){
+
+            // Since we have reached a new row of data,
+            // add an empty row to our data array.
+            arrData.push( [] );
+
+        }
+
+        var strMatchedValue;
+
+        // Now that we have our delimiter out of the way,
+        // let's check to see which kind of value we
+        // captured (quoted or unquoted).
+        if (arrMatches[ 2 ]){
+
+            // We found a quoted value. When we capture
+            // this value, unescape any double quotes.
+            strMatchedValue = arrMatches[ 2 ].replace(
+                new RegExp( "\"\"", "g" ),
+                "\""
+                );
+
+        } else {
+
+            // We found a non-quoted value.
+            strMatchedValue = arrMatches[ 3 ];
+
+        }
+
+
+        // Now that we have our value string, let's add
+        // it to the data array.
+        arrData[ arrData.length - 1 ].push( strMatchedValue );
+    }
+
+    // Return the parsed data.
+    return( arrData );
+}
+
+function parseCSV(ev)
+{
+  var csv = ev.target.result;
+  var csvArray = CSVToArray(csv);
+  var main = document.getElementById("main");
+  for (var i = 1; i < csvArray.length; i++)
+  {
+    var row = csvArray[i];
+    for (var j = 1; j < row.length; j++)
+    {
+      console.log(i * Types.length + j);
+      var cell = main.children[i * (Types.length + 1) + j];
+      while (cell.children.length > 0) cell.removeChild(cell.firstChild);
+      var marking;
+      switch (csvArray[i][j])
+      {
+        case "0.5":
+          marking = -1;
+          break;
+        case "0":
+          marking = 3;
+          break;
+        case "1":
+          marking = 1;
+          break;
+        case "2":
+          marking = 2;
+          break;
+      }
+      cell.dataset.mark = marking;
+      if(marking === 3) {
+        cell.append(htmlToElement(`<img src="exedout.png" />`))
+      }
+    }
+  }
 }
 
 function highlight(div, idx) {
