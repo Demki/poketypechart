@@ -7,6 +7,8 @@ const fairyIndex = Types.indexOf("Fairy");
 const COLORS_MAX = 3;
 const COLORS_MIN = -2;
 
+let countRemaining = false;
+
 window.addEventListener("load", () => {
   const mainDiv = document.getElementById("main");
   fillBoard(mainDiv);
@@ -14,6 +16,14 @@ window.addEventListener("load", () => {
   mainDiv.addEventListener("click", (ev) => { mark(1)(ev); ev.preventDefault(); });
   mainDiv.addEventListener("contextmenu", (ev) => { mark(-1)(ev); ev.preventDefault(); });
   mainDiv.addEventListener("mouseleave", unHighlight(mainDiv));
+
+  mainDiv.addEventListener("click", (ev) => { 
+    if(ev.target.classList.contains("top-of-type-table-blank")) 
+    {
+      countRemaining = !countRemaining;
+      updateCount();
+    }
+  });
 
   document.getElementById("fairyButton").addEventListener("click", toggleFairy);
   
@@ -303,7 +313,7 @@ function setMarking(target, marking) {
 function updateCount() {
   const output = document.getElementById("main").children[0];
   const marked = [...document.getElementsByClassName("type-table-blank")].filter(x => [-1,1,2,3].includes(Number.parseInt(x.dataset.mark) || 0)).length;
-  output.innerHTML = `<span>${marked}</span>`;
+  output.innerHTML = `<span>${countRemaining ? "-" + (document.getElementsByClassName("type-table-blank").length - marked) : marked}</span>`;
 }
 
 function mark(d) {
