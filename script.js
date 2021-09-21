@@ -21,7 +21,7 @@ window.addEventListener("load", () => {
   document.getElementById("verifyLogButton").addEventListener("click", verifyLog);
   
   document.getElementById("outputTxt").value = "";
-  document.getElementById("displayCSVButton").addEventListener("click", showConfirmationCSV);
+  document.getElementById("showCSVButton").addEventListener("click", showConfirmationCSV);
   document.getElementById("hideCSVButton").addEventListener("click", hideConfirmationCSV);
 });
 
@@ -295,6 +295,7 @@ function setMarking(target, marking) {
     target.append(htmlToElement(`<img src="exedout.png" />`))
   }
   updateCount();
+  document.getElementById("outputTxt").value = getTypeChartConfirmationCSV();
 }
 
 function updateCount() {
@@ -336,14 +337,16 @@ function fillBoard(div) {
   })
 
   document.body.style.setProperty("--columns", Types.length + 1);
+  updateCount();
+  document.getElementById("outputTxt").value = getTypeChartConfirmationCSV();
 }
 
 function mapMarking(mark) {
   switch(mark) {
-    case 1 : return "1";
-    case 2 : return "2";
-    case 3 : return "0";
-    case -1: return "0.5";
+    case "1" : return "1";
+    case "2" : return "2";
+    case "3" : return "0";
+    case "-1": return "0.5";
     default: return "_";
   }
 
@@ -363,11 +366,12 @@ function showConfirmationCSV() {
   outputTextField.classList.remove("hidden");
   outputTextField.value = getTypeChartConfirmationCSV();
   document.getElementById("hideCSVButton").classList.remove("hidden");
+  document.getElementById("showCSVButton").classList.add("hidden");
 }
 
 function hideConfirmationCSV() {
   const outputTextField = document.getElementById("outputTxt");
   outputTextField.classList.add("hidden");
-  outputTextField.value = "";
   document.getElementById("hideCSVButton").classList.add("hidden");
+  document.getElementById("showCSVButton").classList.remove("hidden");
 }
