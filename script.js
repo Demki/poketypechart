@@ -16,7 +16,10 @@ window.addEventListener("load", () => {
   mainDiv.addEventListener("mouseleave", unHighlight(mainDiv));
 
   document.getElementById("fairyButton").addEventListener("click", toggleFairy);
+  
   document.getElementById("uploadLogButton").addEventListener("click", uploadLog);
+  document.getElementById("verifyLogButton").addEventListener("click", verifyLog);
+  
   document.getElementById("outputTxt").value = "";
   document.getElementById("displayCSVButton").addEventListener("click", showConfirmationCSV);
   document.getElementById("hideCSVButton").addEventListener("click", hideConfirmationCSV);
@@ -36,12 +39,13 @@ function toggleFairy()
   fillBoard(document.getElementById("main"));
 }
 
-function uploadLog()
+function checkFile()
 {
   const randoLogFile = document.getElementById("randoLogFile");
   if (randoLogFile.files.length === 0)
   {
     alert("No file selected.");
+    return false;
   }
   else
   {
@@ -49,14 +53,32 @@ function uploadLog()
     if (file.type && !(file.type === "application/vnd.ms-excel" || file.type === "text/plain" || file.type === "text/csv"))
     {
       alert("File must be a CSV.");
+      return false;
     }
-    else
-    {
-      const reader = new FileReader();
-      reader.addEventListener("load", parseCSV);
-      reader.readAsText(file);
-    }
+    return file;
   }
+}
+
+function uploadLog()
+{
+  var file = checkFile();
+  if (file === false)
+    return;
+
+  var reader = new FileReader();
+  reader.addEventListener("load", uploadCSV);
+  reader.readAsText(file);
+}
+
+function verifyLog()
+{
+  var file = checkFile();
+  if (file === false)
+    return;
+
+  var reader = new FileReader();
+  reader.addEventListener("load", verifyCSV);
+  reader.readAsText(file);
 }
 
 // ref: http://stackoverflow.com/a/1293163/2343
@@ -146,7 +168,7 @@ function CSVToArray( strData, strDelimiter ){
     return arrData;
 }
 
-function parseCSV(ev)
+function uploadCSV(ev)
 {
   const csv = ev.target.result;
   const csvArray = CSVToArray(csv);
@@ -162,7 +184,6 @@ function parseCSV(ev)
     const row = csvArray[i];
     for (let j = 1; j < row.length; j++)
     {
-      console.log(i * Types.length + j);
       const cell = main.children[i * (Types.length + 1) + j];
       let marking;
       switch (csvArray[i][j])
@@ -189,6 +210,55 @@ function parseCSV(ev)
       setMarking(cell, marking);
     }
   }
+}
+
+function verifyCSV(ev)
+{
+  var csv = ev.target.result;
+  var csvArray = CSVToArray(csv);
+  var main = document.getElementById("main");
+  var headerRow = csvArray[0];
+  if (headerRow.length != Types.length + 1)
+  {
+    alert("Input CSV doesn't have the same number of types as tracker. Try adding or removing Fairy type.");
+    return;
+  }
+  for (var i = 1; i < csvArray.length; i++)
+  {
+    var row = csvArray[i];
+    for (var j = 1; j < row.length; j++)
+    {
+      var cell = main.children[i * (Types.length + 1) + j];
+      var marking;
+      switch (csvArray[i][j])
+      {
+        case "0.5":
+          marking = -1;
+          break;
+        case "0":
+          marking = 3;
+          break;
+        case "1":
+          marking = 1;
+          break;
+        case "2":
+          marking = 2;
+          break;
+        case "_":
+          marking = 0;
+		  break;
+      }
+	  if (marking != cell.dataset.mark)
+      {
+		console.log("No match at " + i + "," + j);
+		console.log("File: " + marking);
+		console.log("Board: " + cell.dataset.mark);
+	    alert("NO MATCH. Try again.");
+		return;
+      }
+    }
+  }
+  alert("IT MATCHES. Congratulations.");
 }
 
 function highlight(div, idx) {
