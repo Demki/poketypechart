@@ -270,7 +270,7 @@ function highlight(div, idx) {
     [...div.children].forEach((el, jdx) => {
       const colj = jdx % colCount;
       const rowj = Math.floor(jdx / colCount);
-      if(colj == col || rowj == row) {
+      if((col != 0 && colj == col) || (row !=0 && rowj == row)) {
         el.classList.add("highlighted");
       } else {
         el.classList.remove("highlighted");
