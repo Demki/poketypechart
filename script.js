@@ -37,6 +37,11 @@ window.addEventListener("load", () => {
 
 function toggleType(ev)
 {
+  const main = document.getElementById("main");
+  if ([...main.children].some((element) => element.dataset.mark && element.dataset.mark != 0) && !confirm("You have data in the tracker. Adding or removing a type will reset all tracked data.\nDo you want to continue and reset all data?"))
+  {
+    return;
+  }
   const type = ev.target.dataset.type;
   const typeIndex = Types.indexOf(type);
   if (typeIndex > -1)
@@ -48,7 +53,7 @@ function toggleType(ev)
     Types.push(type);
     Types.sort();
   }
-  fillBoard(document.getElementById("main"));
+  fillBoard(main);
   ev.target.value = `${typeIndex > -1 ? "Add" : "Remove"} ${type}`;
 }
 
@@ -74,6 +79,11 @@ function checkFile()
 
 function uploadLog()
 {
+  if ([...document.getElementById("main").children].some((element) => element.dataset.mark && element.dataset.mark != 0) && !confirm("You have data in the tracker. Uploading a CSV will replace all tracked data.\nDo you want to continue and replace all data?"))
+  {
+    return;
+  }
+  
   var file = checkFile();
   if (file === false)
     return;
