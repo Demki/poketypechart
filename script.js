@@ -8,8 +8,8 @@ window.addEventListener("load", () => {
   const mainDiv = document.getElementById("main");
   fillBoard(mainDiv);
 
-  mainDiv.addEventListener("click", (ev) => { changeMark(1, ev.target); ev.preventDefault(); });
-  mainDiv.addEventListener("contextmenu", (ev) => { changeMark(-1, ev.target); ev.preventDefault(); });
+  mainDiv.addEventListener("click", (ev) => { modifyMarkBy(ev.target, 1); ev.preventDefault(); });
+  mainDiv.addEventListener("contextmenu", (ev) => { modifyMarkBy(ev.target, -1); ev.preventDefault(); });
   mainDiv.addEventListener("mouseleave", unHighlight(mainDiv));
 
   document.getElementById("steelButton").addEventListener("click", toggleType);
@@ -160,16 +160,15 @@ const MarkingImages = new Map([
 
 function setMarking(target, mark) {
   if(mark instanceof String) mark = Number.parseInt(mark) || 0;
-  target.dataset.mark = mark;
+  target.dataset.mark = clampValue(COLORS_MIN, COLORS_MAX, mark);
   clearChildren(target);
   target.append(htmlToElement(`<img src="${MarkingImages.get(mark) || ""}" />`));
   updateData();
 }
 
-function changeMark(diff, target) {
+function modifyMarkBy(target, diff) {
   if (target.classList.contains("type-table-blank")) {
-    const marking = clampValue(COLORS_MIN, COLORS_MAX, (Number.parseInt(target.dataset.mark) || 0) + diff);
-    setMarking(target, marking);
+    setMarking(target, (Number.parseInt(target.dataset.mark) || 0) + diff);
   }
 }
 
