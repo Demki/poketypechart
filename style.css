@@ -14,20 +14,6 @@ body {
   --color3: #420690;
 }
 
-#outputTxt {
-  display:block;
-  width: 100%;
-}
-
-.hidden, #outputTxt.hidden {
-  display: none;
-}
-
-#controls {
-  margin: 10px;
-  color: white;
-}
-
 #main {
   display: grid;
   background-color: grey;
@@ -98,4 +84,22 @@ body {
 
 .highlighted {
   outline: 2px solid rgb(225, 225, 225);
+}
+
+#controls {
+  margin: 10px;
+  color: white;
+}
+
+#controls > div {
+  margin-top: 2px;
+}
+
+#outputTxt {
+  display:block;
+  width: 100%;
+}
+
+.hidden {
+  display: none !important;
 }

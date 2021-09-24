@@ -10,17 +10,20 @@
   <div id="main">
   </div>
   <div id="controls">
-    <input id="steelButton" type="button" value="Remove Steel" data-type="Steel" />
-    <input id="fairyButton" type="button" value="Remove Fairy" data-type="Fairy" />
-    <br />
-    <input id="randoLogFile" type="file" accept=".csv" />
-    <input id="uploadLogButton" type="button" value="Upload" />
-    <input id="verifyLogButton" type="button" value="Verify" />
-    <br />
-    <input id="saveCSVButton" type="button" value="Save Confirmation CSV" />
-    <input id="showCSVButton" type="button" value="Display Confirmation CSV" />
-    <input id="hideCSVButton" class="hidden" type="button" value="Hide Confirmation CSV" />
-    <textarea id="outputTxt" class="hidden"></textarea>
+    <div id="typeModifyingControls">
+      <input id="steelButton" type="button" value="Remove Steel" data-type="Steel" />
+      <input id="fairyButton" type="button" value="Add Fairy" data-type="Fairy" />
+    </div>
+    <div id="csvCheckingControls">
+      <input id="randoLogFile" type="file" accept=".csv" />
+      <input id="uploadLogButton" type="button" value="Upload" />
+      <input id="verifyLogButton" type="button" value="Verify" />
+    </div>
+    <div id="csvOutputControls">
+      <input id="saveCSVButton" type="button" value="Save Confirmation CSV" />
+      <input id="toggleCSVButton" type="button" value="Display Confirmation CSV" />
+      <textarea id="outputTxt" class="hidden"></textarea>
+    </div>
   </div>
 </body>
 </html>
