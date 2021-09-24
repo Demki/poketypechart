@@ -160,7 +160,8 @@ const MarkingImages = new Map([
 
 function setMarking(target, mark) {
   if(mark instanceof String) mark = Number.parseInt(mark) || 0;
-  target.dataset.mark = clampValue(COLORS_MIN, COLORS_MAX, mark);
+  mark = clampValue(COLORS_MIN, COLORS_MAX, mark);
+  target.dataset.mark = mark;
   clearChildren(target);
   target.append(htmlToElement(`<img src="${MarkingImages.get(mark) || ""}" />`));
   updateData();
