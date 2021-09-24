@@ -124,7 +124,7 @@ let countRemaining = false;
 function updateCount() {
   const output = document.getElementById("main").children[0];
   const typeTableElements = [...document.getElementsByClassName("type-table-blank")];
-  const marked = typeTableElements.filter(x => [-1, 1, 2, 3].includes(Number.parseInt(x.dataset.mark) || 0)).length;
+  const marked = typeTableElements.filter(x => Object.values(Marks).includes(Number.parseInt(x.dataset.mark) || 0)).length;
   const remaining = typeTableElements.length - marked;
   output.innerHTML = "<span>" + (countRemaining ? "-" + remaining : "" + marked) + "</span>";
 }
