@@ -39,6 +39,11 @@ function clampValue(min, max, value) {
   return Math.min(max, Math.max(min, value));
 }
 
+// javascript nonsense...
+function isString(x) {
+  return (typeof x == 'string') || (x instanceof String);
+}
+
 // Tracker board setup
 
 function fillBoard(div) {
@@ -159,7 +164,7 @@ const MarkingImages = new Map([
 ]);
 
 function setMarking(target, mark) {
-  if(mark instanceof String) mark = Number.parseInt(mark) || 0;
+  if(isString(mark)) mark = Number.parseInt(mark) || 0;
   mark = clampValue(COLORS_MIN, COLORS_MAX, mark);
   target.dataset.mark = mark;
   clearChildren(target);
@@ -191,7 +196,7 @@ const MarkMappingTo = new Map(_Mapping);
 const MarkMappingFrom = new Map(_MappingRev);
 
 function mapMarkingToCsvValue(mark) {
-  if(mark instanceof String) mark = Number.parseInt(mark) || 0;
+  if(isString(mark)) mark = Number.parseInt(mark) || 0;
   return MarkMappingTo.get(mark) || UnknownValueCSVStr;
 }
 
