@@ -7,11 +7,11 @@ body {
   justify-content: center;
   align-items: center;
 
-  --color-2: #7070FF;
+  --color-2: #420690;
   --color-1: #970000;
   --color1: lightgrey;
   --color2: yellowgreen;
-  --color3: #420690;
+  --color3: #7070FF;
 }
 
 #main {

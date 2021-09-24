@@ -105,35 +105,10 @@ function unHighlight(div) {
   }
 }
 
-// Mark mapping
-
-const UnknownValueStr = "_";
-
-const _Mapping = [
-  ["-1", "0.5"],
-  ["1", "1.0"],
-  ["2", "2.0"],
-  ["3", "0.0"],
-];
-
-const _MappingRev = _Mapping.flatMap(([x, y]) => [[y, x], [y.replace(".0", ""), x]]);
-
-const MarkMappingTo = new Map(_Mapping);
-
-const MarkMappingFrom = new Map(_MappingRev);
-
-function mapMarkingToCsvValue(mark) {
-  return MarkMappingTo.get(mark) || UnknownValueStr;
-}
-
-function mapCsvValueToMarking(csvValue) {
-  return MarkMappingFrom.get(csvValue) || null;
-}
-
 // Counting and CSV bookkeeping
 
 function getTypeChartConfirmationCSV() {
-  let csv = UnknownValueStr + "," + Types.map(x => x.toUpperCase().substring(0, 3)).join(",") + "\n";
+  let csv = UnknownValueCSVStr + "," + Types.map(x => x.toUpperCase().substring(0, 3)).join(",") + "\n";
   const tableElements = [...document.getElementById("main").children];
   for (let idx = 0; idx < Types.length; ++idx) {
     const type = Types[idx];
@@ -166,20 +141,28 @@ function updateData() {
 
 // Marking
 
-const COLORS_MAX = 3;
+const COLORS_MAX = 3; // Note: is an extra color really needed?
 const COLORS_MIN = -2;
 
+const Marks = {
+  NotVeryEffective : -1,
+  Normal : 1,
+  SuperEffective: 2,
+  NoEffect: -2
+}
+
 const MarkingImages = new Map([
-  ["-1", "effectiveness/NotVeryEffective.png"],
-  ["1", "effectiveness/Normal.png"],
-  ["2", "effectiveness/SuperEffective.png"],
-  ["3", "effectiveness/NoEffect.png"]
+  [Marks.NotVeryEffective, "effectiveness/NotVeryEffective.png"],
+  [Marks.Normal, "effectiveness/Normal.png"],
+  [Marks.SuperEffective, "effectiveness/SuperEffective.png"],
+  [Marks.NoEffect, "effectiveness/NoEffect.png"]
 ]);
 
-function setMarking(target, marking) {
-  target.dataset.mark = marking;
+function setMarking(target, mark) {
+  if(mark instanceof String) mark = Number.parseInt(mark) || 0;
+  target.dataset.mark = mark;
   clearChildren(target);
-  target.append(htmlToElement(`<img src="${MarkingImages.get(marking.toString()) || ""}" />`));
+  target.append(htmlToElement(`<img src="${MarkingImages.get(mark) || ""}" />`));
   updateData();
 }
 
@@ -188,6 +171,32 @@ function changeMark(diff, target) {
     const marking = clampValue(COLORS_MIN, COLORS_MAX, (Number.parseInt(target.dataset.mark) || 0) + diff);
     setMarking(target, marking);
   }
+}
+
+// Mark mapping
+
+const UnknownValueCSVStr = "_";
+
+const _Mapping = [
+  [Marks.NotVeryEffective, "0.5"],
+  [Marks.Normal, "1.0"],
+  [Marks.SuperEffective, "2.0"],
+  [Marks.NoEffect, "0.0"],
+];
+
+const _MappingRev = _Mapping.flatMap(([x, y]) => [[y, x], [y.replace(".0", ""), x]]);
+
+const MarkMappingTo = new Map(_Mapping);
+
+const MarkMappingFrom = new Map(_MappingRev);
+
+function mapMarkingToCsvValue(mark) {
+  if(mark instanceof String) mark = Number.parseInt(mark) || 0;
+  return MarkMappingTo.get(mark) || UnknownValueCSVStr;
+}
+
+function mapCsvValueToMarking(csvValue) {
+  return MarkMappingFrom.get(csvValue) || null;
 }
 
 // Output Confirmation CSV
