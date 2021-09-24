@@ -129,7 +129,7 @@ let countRemaining = false;
 function updateCount() {
   const output = document.getElementById("main").children[0];
   const typeTableElements = [...document.getElementsByClassName("type-table-blank")];
-  const marked = typeTableElements.filter(x => Object.values(Marks).includes(Number.parseInt(x.dataset.mark) || 0)).length;
+  const marked = typeTableElements.filter(x => Object.values(EffectivenessMarks).includes(Number.parseInt(x.dataset.mark) || 0)).length;
   const remaining = typeTableElements.length - marked;
   output.innerHTML = "<span>" + (countRemaining ? "-" + remaining : "" + marked) + "</span>";
 }
@@ -146,26 +146,31 @@ function updateData() {
 
 // Marking
 
-const COLORS_MAX = 3; // Note: is an extra color really needed?
-const COLORS_MIN = -2;
+const MARK_MAX = 3;
+const MARK_MIN = -2;
 
-const Marks = {
-  NotVeryEffective : -1,
-  Normal : 1,
+const EffectivenessMarks = {
+  NotVeryEffective: -1,
+  Normal: 1,
   SuperEffective: 2,
   NoEffect: -2
 }
 
+const AuxillaryMarks = {
+  Blank: 0,
+  Note: 3
+}
+
 const MarkingImages = new Map([
-  [Marks.NotVeryEffective, "effectiveness/NotVeryEffective.png"],
-  [Marks.Normal, "effectiveness/Normal.png"],
-  [Marks.SuperEffective, "effectiveness/SuperEffective.png"],
-  [Marks.NoEffect, "effectiveness/NoEffect.png"]
+  [EffectivenessMarks.NotVeryEffective, "effectiveness/NotVeryEffective.png"],
+  [EffectivenessMarks.Normal, "effectiveness/Normal.png"],
+  [EffectivenessMarks.SuperEffective, "effectiveness/SuperEffective.png"],
+  [EffectivenessMarks.NoEffect, "effectiveness/NoEffect.png"]
 ]);
 
 function setMarking(target, mark) {
-  if(isString(mark)) mark = Number.parseInt(mark) || 0;
-  mark = clampValue(COLORS_MIN, COLORS_MAX, mark);
+  if (isString(mark)) mark = Number.parseInt(mark) || 0;
+  mark = clampValue(MARK_MIN, MARK_MAX, mark);
   target.dataset.mark = mark;
   clearChildren(target);
   target.append(htmlToElement(`<img src="${MarkingImages.get(mark) || ""}" />`));
@@ -183,10 +188,10 @@ function modifyMarkBy(target, diff) {
 const UnknownValueCSVStr = "_";
 
 const _Mapping = [
-  [Marks.NotVeryEffective, "0.5"],
-  [Marks.Normal, "1.0"],
-  [Marks.SuperEffective, "2.0"],
-  [Marks.NoEffect, "0.0"],
+  [EffectivenessMarks.NotVeryEffective, "0.5"],
+  [EffectivenessMarks.Normal, "1.0"],
+  [EffectivenessMarks.SuperEffective, "2.0"],
+  [EffectivenessMarks.NoEffect, "0.0"],
 ];
 
 const _MappingRev = _Mapping.flatMap(([x, y]) => [[y, x], [y.replace(".0", ""), x]]);
@@ -196,7 +201,7 @@ const MarkMappingTo = new Map(_Mapping);
 const MarkMappingFrom = new Map(_MappingRev);
 
 function mapMarkingToCsvValue(mark) {
-  if(isString(mark)) mark = Number.parseInt(mark) || 0;
+  if (isString(mark)) mark = Number.parseInt(mark) || 0;
   return MarkMappingTo.get(mark) || UnknownValueCSVStr;
 }
 
@@ -392,7 +397,7 @@ function verifyCSV(ev) {
     errorNumberOfTypesDontMatch();
     return;
   }
-  if ([...main.children].some((element) => element.dataset.mark && element.dataset.mark == 0)) {
+  if ([...main.children].some((element) => element.dataset.mark && Object.values(AuxillaryMarks).includes(Number.parseInt(element.dataset.mark)))) {
     alert("Tracking incomplete. Unable to verify.");
     return;
   }
