@@ -22,7 +22,7 @@ window.addEventListener("load", () => {
   document.getElementById("saveCSVButton").addEventListener("click", saveConfirmationCSV);
 });
 
-// Utility Functions
+//#region Utility Functions
 
 function htmlToElement(html) {
   var template = document.createElement('template');
@@ -44,7 +44,8 @@ function isString(x) {
   return (typeof x == 'string') || (x instanceof String);
 }
 
-// Tracker board setup
+//#endregion Utility Functions
+//#region Tracker board setup
 
 function fillBoard(div) {
   clearChildren(div);
@@ -83,7 +84,8 @@ function toggleType(ev) {
   ev.target.value = `${typeIndex > -1 ? "Add" : "Remove"} ${type}`;
 }
 
-// Highlighting
+//#endregion Tracker board setup
+//#region Highlighting
 
 function highlight(div, idx) {
   return () => {
@@ -93,10 +95,15 @@ function highlight(div, idx) {
     [...div.children].forEach((el, jdx) => {
       const colj = jdx % colCount;
       const rowj = Math.floor(jdx / colCount);
-      if ((col != 0 && colj == col) || (row != 0 && rowj == row)) {
-        el.classList.add("highlighted");
-      } else {
-        el.classList.remove("highlighted");
+      const sameCol = col != 0 && colj == col;
+      const sameRow = row != 0 && rowj == row;
+      el.classList.remove("highlighted", "highlighted-row", "highlighted-column");
+      if (!(sameCol && sameRow)) {
+        if (sameCol) {
+          el.classList.add("highlighted", "highlighted-column");
+        } else if (sameRow) {
+          el.classList.add("highlighted", "highlighted-row");
+        }
       }
     })
   }
@@ -110,7 +117,8 @@ function unHighlight(div) {
   }
 }
 
-// Counting and CSV bookkeeping
+//#endregion Highlighting
+//#region Counting and CSV bookkeeping
 
 function getTypeChartConfirmationCSV() {
   let csv = UnknownValueCSVStr + "," + Types.map(x => x.toUpperCase().substring(0, 3)).join(",") + "\n";
@@ -144,10 +152,10 @@ function updateData() {
   document.getElementById("outputTxt").value = getTypeChartConfirmationCSV();
 }
 
-// Marking
+//#endregion Counting and CSV bookkeeping
+//#region Marking
 
-const MARK_MAX = 3;
-const MARK_MIN = -2;
+const MARK_MIN = -2, MARK_MAX = 3;
 
 const EffectivenessMarks = {
   NotVeryEffective: -1,
@@ -183,7 +191,8 @@ function modifyMarkBy(target, diff) {
   }
 }
 
-// Mark mapping
+//#endregion Marking
+//#region Mark mapping
 
 const UnknownValueCSVStr = "_";
 
@@ -209,7 +218,8 @@ function mapCsvValueToMarking(csvValue) {
   return MarkMappingFrom.get(csvValue) || null;
 }
 
-// Output Confirmation CSV
+//#endregion Mark mapping
+//#region Output Confirmation CSV
 
 function toggleConfirmationCSV({ target }) {
   const outputTextField = document.getElementById("outputTxt");
@@ -232,7 +242,8 @@ function saveConfirmationCSV() {
   URL.revokeObjectURL(a.href);
 }
 
-// Input Confirmation CSV
+//#endregion Output Confirmation CSV
+//#region Input Confirmation CSV
 
 function checkFile() {
   const randoLogFile = document.getElementById("randoLogFile");
@@ -422,3 +433,5 @@ function verifyCSV(ev) {
   }
   alert("IT MATCHES. Congratulations.");
 }
+
+//#endregion Input Confirmation CSV
