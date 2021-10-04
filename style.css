@@ -29,6 +29,7 @@ body {
 }
 
 .type-table-header > img {
+  display: block;
   width: 30px;
   margin: 3px;
 }
