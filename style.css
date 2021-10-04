@@ -95,30 +95,30 @@ body {
 }
 
 .highlighted-column:before, .highlighted-column:after{
-  height: calc(100% + 2px);
+  height: calc(100% + 4px);
   width: 2px;  
 }
 
 .highlighted-row:before, .highlighted-row:after{
   height: 2px;
-  width: calc(100% + 2px);
+  width: calc(100% + 4px);
 }
 
 .highlighted-column:before {
-  top: 0px;
+  top: -2px;
   left: -2px;
 }
 .highlighted-column:after {
-  top: 0px;
+  top: -2px;
   right: -2px;
 }
 
 .highlighted-row:before {
-  left: 0px;
+  left: -2px;
   top: -2px;
 }
 .highlighted-row:after {
-  left: 0px;
+  left: -2px;
   bottom: -2px;
 }
 
