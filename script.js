@@ -1,22 +1,22 @@
 const Types = [
-  "Bug", "Dark", "Dragon", "Electric", "Fighting", "Fire", "Flying", "Ghost", "Grass", "Ground", "Ice", "Normal", "Poison", "Psychic", "Rock", "Steel", "Water"
+  ["Bug", "Dragon", "Electric", "Fighting", "Fire", "Flying", "Ghost", "Grass", "Ground", "Ice", "Normal", "Poison", "Psychic", "Rock", "Water"],
+  ["Bug", "Dark", "Dragon", "Electric", "Fighting", "Fire", "Flying", "Ghost", "Grass", "Ground", "Ice", "Normal", "Poison", "Psychic", "Rock", "Steel", "Water"],
+  ["Bug", "Dark", "Dragon", "Electric", "Fairy", "Fighting", "Fire", "Flying", "Ghost", "Grass", "Ground", "Ice", "Normal", "Poison", "Psychic", "Rock", "Steel", "Water"],
 ]
+let typeIndex = 1;
 
 // Setup events and initialize tracker board
 
 window.addEventListener("load", () => {
   const mainDiv = document.getElementById("main");
+  console.log(Types[typeIndex]);
   fillBoard(mainDiv);
 
   mainDiv.addEventListener("click", (ev) => { modifyMarkBy(ev.target, 1); ev.preventDefault(); });
   mainDiv.addEventListener("contextmenu", (ev) => { modifyMarkBy(ev.target, -1); ev.preventDefault(); });
   mainDiv.addEventListener("mouseleave", unHighlight(mainDiv));
-
-  let typeModifyingControls = document.getElementById("typeModifyingControls").children;
-  for (var i = 0; i < typeModifyingControls.length; i++)
-  {
-    typeModifyingControls[i].addEventListener("click", toggleType);
-  }
+  
+  document.getElementById("generationSelect").addEventListener("change", generationSelect);
 
   document.getElementById("uploadLogButton").addEventListener("click", uploadLog);
   document.getElementById("verifyLogButton").addEventListener("click", verifyLog);
@@ -53,38 +53,30 @@ function isString(x) {
 function fillBoard(div) {
   clearChildren(div);
   div.append(htmlToElement(`<div class="top-of-type-table-blank"><span>0</span></div>`));
-  div.append(...Types.map(type => htmlToElement(`<div class="type-table-header"><img title="${type}" src="types/Icon_${type}.webp" /></div>`)));
-  div.append(...Types.flatMap(type => [
+  div.append(...Types[typeIndex].map(type => htmlToElement(`<div class="type-table-header"><img title="${type}" src="types/Icon_${type}.webp" /></div>`)));
+  div.append(...Types[typeIndex].flatMap(type => [
     htmlToElement(`<div class="type-table-header"><img title="${type}" src="types/Icon_${type}.webp"/></div>`),
-    ...Types.map(_ => htmlToElement(`<div class="type-table-blank" data-mark="0"></div>`))]
+    ...Types[typeIndex].map(_ => htmlToElement(`<div class="type-table-blank" data-mark="0"></div>`))]
   ));
   [...div.children].forEach((el, idx) => {
     el.addEventListener("mouseenter", highlight(div, idx));
   })
 
-  document.body.style.setProperty("--columns", Types.length + 1);
+  document.body.style.setProperty("--columns", Types[typeIndex].length + 1);
 
   updateData();
 
   div.children[0].addEventListener("click", toggleCountingDirection);
 }
 
-function toggleType(ev) {
+function generationSelect(ev) {
   const main = document.getElementById("main");
   if ([...main.children].some((element) => element.dataset.mark && element.dataset.mark != 0) && !confirm("You have data in the tracker. Adding or removing a type will reset all tracked data.\nDo you want to continue and reset all data?")) {
+    ev.target.selectedIndex = typeIndex;
     return;
   }
-  const type = ev.target.dataset.type;
-  const typeIndex = Types.indexOf(type);
-  if (typeIndex > -1) {
-    Types.splice(typeIndex, 1);
-  }
-  else {
-    Types.push(type);
-    Types.sort();
-  }
+  typeIndex = ev.target.selectedIndex;
   fillBoard(main);
-  ev.target.value = `${typeIndex > -1 ? "Add" : "Remove"} ${type}`;
 }
 
 //#endregion Tracker board setup
@@ -92,7 +84,7 @@ function toggleType(ev) {
 
 function highlight(div, idx) {
   return () => {
-    const colCount = Types.length + 1;
+    const colCount = Types[typeIndex].length + 1;
     const col = idx % colCount;
     const row = Math.floor(idx / colCount);
     [...div.children].forEach((el, jdx) => {
@@ -124,11 +116,11 @@ function unHighlight(div) {
 //#region Counting and CSV bookkeeping
 
 function getTypeChartConfirmationCSV() {
-  let csv = UnknownValueCSVStr + "," + Types.map(x => x.toUpperCase().substring(0, 3)).join(",") + "\n";
+  let csv = UnknownValueCSVStr + "," + Types[typeIndex].map(x => x.toUpperCase().substring(0, 3)).join(",") + "\n";
   const tableElements = [...document.getElementById("main").children];
-  for (let idx = 0; idx < Types.length; ++idx) {
-    const type = Types[idx];
-    const rowLen = Types.length + 1;
+  for (let idx = 0; idx < Types[typeIndex].length; ++idx) {
+    const type = Types[typeIndex][idx];
+    const rowLen = Types[typeIndex].length + 1;
     csv += type + ",";
     csv += tableElements.slice((idx + 1) * rowLen + 1, (idx + 2) * rowLen).map(x => mapMarkingToCsvValue(x.dataset.mark || 0)).join(",") + "\n";
   }
@@ -376,7 +368,7 @@ function CSVToArray(strData, strDelimiter) {
 }
 
 function errorNumberOfTypesDontMatch(n) {
-  alert(`Input CSV has ${n} types while the tracker has ${Types.length} types.\nTry ${n > Types.length ? "adding" : "removing"} the Fairy and/or Steel types.`);
+  alert(`Input CSV has ${n} types while the tracker has ${Types[typeIndex].length} types.\nMake sure you have the correct generation selected.`);
 }
 
 function uploadCSV(ev) {
@@ -384,14 +376,14 @@ function uploadCSV(ev) {
   const csvArray = CSVToArray(csv);
   const main = document.getElementById("main");
   const headerRow = csvArray[0];
-  if (headerRow.length != Types.length + 1) {
+  if (headerRow.length != Types[typeIndex].length + 1) {
     errorNumberOfTypesDontMatch(headerRow.length - 1);
     return;
   }
   for (let i = 1; i < csvArray.length; i++) {
     const row = csvArray[i];
     for (let j = 1; j < row.length; j++) {
-      const cell = main.children[i * (Types.length + 1) + j];
+      const cell = main.children[i * (Types[typeIndex].length + 1) + j];
       let marking = mapCsvValueToMarking(csvArray[i][j]);
       if (marking === null) {
         marking = 0;
@@ -407,7 +399,7 @@ function verifyCSV(ev) {
   const csvArray = CSVToArray(csv);
   const main = document.getElementById("main");
   const headerRow = csvArray[0];
-  if (headerRow.length != Types.length + 1) {
+  if (headerRow.length != Types[typeIndex].length + 1) {
     errorNumberOfTypesDontMatch();
     return;
   }
@@ -418,7 +410,7 @@ function verifyCSV(ev) {
   for (let i = 1; i < csvArray.length; i++) {
     const row = csvArray[i];
     for (var j = 1; j < row.length; j++) {
-      const cell = main.children[i * (Types.length + 1) + j];
+      const cell = main.children[i * (Types[typeIndex].length + 1) + j];
       let marking = mapCsvValueToMarking(csvArray[i][j]);
       if (marking === null) {
         alert("Unexpected value in CSV - Verification failed.");
