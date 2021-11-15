@@ -12,9 +12,11 @@ window.addEventListener("load", () => {
   mainDiv.addEventListener("contextmenu", (ev) => { modifyMarkBy(ev.target, -1); ev.preventDefault(); });
   mainDiv.addEventListener("mouseleave", unHighlight(mainDiv));
 
-  document.getElementById("darkButton").addEventListener("click", toggleType);
-  document.getElementById("steelButton").addEventListener("click", toggleType);
-  document.getElementById("fairyButton").addEventListener("click", toggleType);
+  let typeModifyingControls = document.getElementById("typeModifyingControls").children;
+  for (var i = 0; i < typeModifyingControls.length; i++)
+  {
+    typeModifyingControls[i].addEventListener("click", toggleType);
+  }
 
   document.getElementById("uploadLogButton").addEventListener("click", uploadLog);
   document.getElementById("verifyLogButton").addEventListener("click", verifyLog);
