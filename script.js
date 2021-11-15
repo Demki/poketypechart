@@ -9,7 +9,6 @@ let typeIndex = 1;
 
 window.addEventListener("load", () => {
   const mainDiv = document.getElementById("main");
-  console.log(Types[typeIndex]);
   fillBoard(mainDiv);
 
   mainDiv.addEventListener("click", (ev) => { modifyMarkBy(ev.target, 1); ev.preventDefault(); });
