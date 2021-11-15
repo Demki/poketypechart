@@ -8,6 +8,8 @@ let typeIndex = 1;
 // Setup events and initialize tracker board
 
 window.addEventListener("load", () => {
+  let generationSelect = document.getElementById("generationSelect");
+  typeIndex = generationSelect.selectedIndex;
   const mainDiv = document.getElementById("main");
   fillBoard(mainDiv);
 
@@ -15,7 +17,7 @@ window.addEventListener("load", () => {
   mainDiv.addEventListener("contextmenu", (ev) => { modifyMarkBy(ev.target, -1); ev.preventDefault(); });
   mainDiv.addEventListener("mouseleave", unHighlight(mainDiv));
   
-  document.getElementById("generationSelect").addEventListener("change", generationSelect);
+  generationSelect.addEventListener("change", selectGeneration);
 
   document.getElementById("uploadLogButton").addEventListener("click", uploadLog);
   document.getElementById("verifyLogButton").addEventListener("click", verifyLog);
@@ -68,7 +70,7 @@ function fillBoard(div) {
   div.children[0].addEventListener("click", toggleCountingDirection);
 }
 
-function generationSelect(ev) {
+function selectGeneration(ev) {
   const main = document.getElementById("main");
   if ([...main.children].some((element) => element.dataset.mark && element.dataset.mark != 0) && !confirm("You have data in the tracker. Adding or removing a type will reset all tracked data.\nDo you want to continue and reset all data?")) {
     ev.target.selectedIndex = typeIndex;
