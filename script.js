@@ -16,7 +16,7 @@ window.addEventListener("load", () => {
   mainDiv.addEventListener("click", (ev) => { modifyMarkBy(ev.target, 1); ev.preventDefault(); });
   mainDiv.addEventListener("contextmenu", (ev) => { modifyMarkBy(ev.target, -1); ev.preventDefault(); });
   mainDiv.addEventListener("mouseleave", unHighlight(mainDiv));
-  
+
   generationSelect.addEventListener("change", selectGeneration);
 
   document.getElementById("uploadLogButton").addEventListener("click", uploadLog);
@@ -197,6 +197,7 @@ const _Mapping = [
   [EffectivenessMarks.Normal, "1.0"],
   [EffectivenessMarks.SuperEffective, "2.0"],
   [EffectivenessMarks.NoEffect, "0.0"],
+  [AuxillaryMarks.Note, "N"],
 ];
 
 const _MappingRev = _Mapping.flatMap(([x, y]) => [[y, x], [y.replace(".0", ""), x]]);
